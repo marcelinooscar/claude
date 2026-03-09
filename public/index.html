@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reservar Cita - Centro de Estética</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-light bg-white border-bottom px-3 px-md-4">
+  <span class="navbar-brand">🌸 Centro de Estética</span>
+  <button class="btn btn-sm btn-outline-secondary" id="logout-btn">
+    <i class="bi bi-box-arrow-right"></i> Salir
+  </button>
+</nav>
+
+<!-- Steps indicator -->
+<div class="steps-header">
+  <div class="step-indicator">
+    <div class="step-dot active" id="step-dot-1">
+      <div class="step-circle">1</div>
+      <div class="step-label">Tus datos</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="step-dot-2">
+      <div class="step-circle">2</div>
+      <div class="step-label">Tratamiento</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="step-dot-3">
+      <div class="step-circle">3</div>
+      <div class="step-label">Fecha</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="step-dot-4">
+      <div class="step-circle">4</div>
+      <div class="step-label">Hora</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="step-dot-5">
+      <div class="step-circle"><i class="bi bi-check"></i></div>
+      <div class="step-label">Confirmación</div>
+    </div>
+  </div>
+</div>
+
+<!-- Booking container -->
+<div class="booking-container">
+
+  <!-- STEP 1: Datos personales -->
+  <div class="step-panel active" id="step-1">
+    <div class="step-card">
+      <h4><i class="bi bi-person-circle me-2" style="color:var(--primary)"></i>Tus datos de contacto</h4>
+      <div id="step1-error" class="alert alert-danger d-none"></div>
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">Nombre <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="inp-name" placeholder="Tu nombre" autocomplete="given-name">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Apellidos <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="inp-surname" placeholder="Tus apellidos" autocomplete="family-name">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Teléfono <span class="text-danger">*</span></label>
+          <input type="tel" class="form-control" id="inp-phone" placeholder="+34 600 000 000" autocomplete="tel">
+        </div>
+      </div>
+      <div class="btn-nav">
+        <span></span>
+        <button class="btn btn-primary" onclick="goStep(2)">
+          Siguiente <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Elegir tratamiento -->
+  <div class="step-panel" id="step-2">
+    <div class="step-card">
+      <h4><i class="bi bi-stars me-2" style="color:var(--primary)"></i>Elige tu tratamiento</h4>
+      <div id="treatments-grid" class="treatment-grid">
+        <div class="loader"><div class="spinner-border spinner-border-sm" role="status"></div> Cargando...</div>
+      </div>
+      <div class="btn-nav">
+        <button class="btn btn-outline-secondary" onclick="goStep(1)">
+          <i class="bi bi-arrow-left me-1"></i> Atrás
+        </button>
+        <button class="btn btn-primary" id="btn-step2-next" onclick="goStep(3)" disabled>
+          Siguiente <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Elegir fecha -->
+  <div class="step-panel" id="step-3">
+    <div class="step-card">
+      <h4><i class="bi bi-calendar3 me-2" style="color:var(--primary)"></i>Elige la fecha</h4>
+      <div class="custom-calendar" id="calendar"></div>
+      <div class="btn-nav">
+        <button class="btn btn-outline-secondary" onclick="goStep(2)">
+          <i class="bi bi-arrow-left me-1"></i> Atrás
+        </button>
+        <button class="btn btn-primary" id="btn-step3-next" onclick="goStep(4)" disabled>
+          Siguiente <i class="bi bi-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Elegir hora -->
+  <div class="step-panel" id="step-4">
+    <div class="step-card">
+      <h4><i class="bi bi-clock me-2" style="color:var(--primary)"></i>Elige la hora</h4>
+      <p class="text-muted small mb-3" id="slots-subtitle"></p>
+      <div id="slots-container">
+        <div class="loader"><div class="spinner-border spinner-border-sm" role="status"></div> Comprobando disponibilidad...</div>
+      </div>
+      <div class="btn-nav">
+        <button class="btn btn-outline-secondary" onclick="goStep(3)">
+          <i class="bi bi-arrow-left me-1"></i> Atrás
+        </button>
+        <button class="btn btn-primary" id="btn-step4-next" onclick="goStep(5)" disabled>
+          Confirmar cita <i class="bi bi-check-lg ms-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Confirmación -->
+  <div class="step-panel" id="step-5">
+    <div class="step-card text-center" id="confirm-panel">
+      <h4><i class="bi bi-check2-circle me-2" style="color:var(--primary)"></i>Confirma tu cita</h4>
+      <div id="summary-content"></div>
+      <div class="btn-nav">
+        <button class="btn btn-outline-secondary" onclick="goStep(4)">
+          <i class="bi bi-arrow-left me-1"></i> Atrás
+        </button>
+        <button class="btn btn-primary" id="btn-confirmar" onclick="confirmarCita()">
+          <i class="bi bi-calendar-check me-1"></i> Reservar ahora
+        </button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="step-card text-center d-none" id="success-panel">
+      <div class="success-icon mb-3">🌸</div>
+      <h4 style="color:var(--primary-dark)">¡Cita registrada!</h4>
+      <p class="text-muted">Tu cita ha sido confirmada y añadida a nuestra agenda.</p>
+      <div id="success-summary" class="text-start mb-3"></div>
+      <div class="info-box">
+        <i class="bi bi-telephone-fill me-2"></i>
+        Para modificar o cancelar tu cita, llama al centro:<br>
+        <strong id="center-phone-display"></strong>
+      </div>
+      <button class="btn btn-primary mt-4" onclick="resetBooking()">
+        <i class="bi bi-plus-circle me-1"></i> Nueva reserva
+      </button>
+    </div>
+  </div>
+
+</div><!-- /booking-container -->
+
+<script>
+// =============================================
+// ESTADO DE LA APLICACIÓN
+// =============================================
+const state = {
+  name: '', surname: '', phone: '',
+  treatmentId: null, treatmentName: '', treatmentDuration: 0,
+  date: null, time: null,
+  closedDays: [],
+};
+
+let calendarYear, calendarMonth;
+const today = new Date();
+calendarYear = today.getFullYear();
+calendarMonth = today.getMonth();
+
+const MONTHS_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                   'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+// =============================================
+// NAVEGACIÓN ENTRE PASOS
+// =============================================
+async function goStep(n) {
+  const currentPanel = document.querySelector('.step-panel.active');
+  if (!currentPanel) return;
+
+  // Validaciones al avanzar
+  if (n === 2) {
+    state.name = document.getElementById('inp-name').value.trim();
+    state.surname = document.getElementById('inp-surname').value.trim();
+    state.phone = document.getElementById('inp-phone').value.trim();
+    const err = document.getElementById('step1-error');
+    if (!state.name || !state.surname || !state.phone) {
+      err.textContent = 'Por favor, completa todos los campos.';
+      err.classList.remove('d-none');
+      return;
+    }
+    err.classList.add('d-none');
+    loadTreatments();
+  }
+
+  if (n === 3) {
+    if (!state.treatmentId) return;
+    loadOpenDays();
+  }
+
+  if (n === 4) {
+    if (!state.date) return;
+    loadSlots();
+  }
+
+  if (n === 5) {
+    if (!state.time) return;
+    renderSummary();
+  }
+
+  // Actualizar indicadores
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById(`step-dot-${i}`);
+    if (!dot) continue;
+    dot.classList.remove('active', 'done');
+    if (i < n) dot.classList.add('done');
+    if (i === n) dot.classList.add('active');
+  }
+
+  // Mostrar panel
+  currentPanel.classList.remove('active');
+  document.getElementById(`step-${n}`).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =============================================
+// STEP 2: TRATAMIENTOS
+// =============================================
+async function loadTreatments() {
+  const grid = document.getElementById('treatments-grid');
+  grid.innerHTML = '<div class="loader"><div class="spinner-border spinner-border-sm" role="status"></div> Cargando...</div>';
+  try {
+    const res = await fetch('/api/availability/treatments');
+    if (res.status === 401) { window.location.href = '/login.html'; return; }
+    const treatments = await res.json();
+
+    if (treatments.length === 0) {
+      grid.innerHTML = '<p class="text-muted">No hay tratamientos disponibles.</p>';
+      return;
+    }
+
+    grid.innerHTML = treatments.map(t => `
+      <div class="treatment-card ${state.treatmentId === t.id ? 'selected' : ''}"
+           onclick="selectTreatment(${t.id}, '${escHtml(t.name)}', ${t.duration_minutes})">
+        <div class="treatment-icon">${getTreatmentIcon(t.name)}</div>
+        <div class="treatment-name">${escHtml(t.name)}</div>
+        <div class="treatment-duration"><i class="bi bi-clock"></i> ${t.duration_minutes} min</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    grid.innerHTML = '<p class="text-danger">Error al cargar los tratamientos.</p>';
+  }
+}
+
+function selectTreatment(id, name, duration) {
+  state.treatmentId = id;
+  state.treatmentName = name;
+  state.treatmentDuration = duration;
+  state.date = null;
+  state.time = null;
+  document.querySelectorAll('.treatment-card').forEach(c => c.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('btn-step2-next').disabled = false;
+}
+
+function getTreatmentIcon(name) {
+  const n = name.toLowerCase();
+  if (n.includes('pie')) return '🦶';
+  if (n.includes('man')) return '🤲';
+  if (n.includes('pierna')) return '🦵';
+  if (n.includes('espald')) return '💆';
+  if (n.includes('complet')) return '💆‍♀️';
+  if (n.includes('relaj')) return '🌿';
+  if (n.includes('express')) return '⚡';
+  return '✨';
+}
+
+// =============================================
+// STEP 3: CALENDARIO
+// =============================================
+async function loadOpenDays() {
+  try {
+    const res = await fetch('/api/availability/open-days');
+    const data = await res.json();
+    state.closedDays = data.closedDays || [];
+  } catch(e) {
+    state.closedDays = [];
+  }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const cal = document.getElementById('calendar');
+  const firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+  const daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+  const todayStr = formatDate(today);
+  const maxDate = new Date(today);
+  maxDate.setDate(maxDate.getDate() + 60);
+
+  let html = `
+    <div class="cal-header">
+      <button class="cal-nav" onclick="prevMonth()">&#8592;</button>
+      <h5>${MONTHS_ES[calendarMonth]} ${calendarYear}</h5>
+      <button class="cal-nav" onclick="nextMonth()">&#8594;</button>
+    </div>
+    <div class="cal-grid">
+      ${DAYS_ES.map(d => `<div class="cal-day-header">${d}</div>`).join('')}
+      ${Array(firstDay).fill('<div class="cal-day empty"></div>').join('')}
+  `;
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(calendarYear, calendarMonth, d);
+    const dateStr = formatDate(date);
+    const dow = date.getDay();
+    const isPast = dateStr < todayStr;
+    const isTooFar = date > maxDate;
+    const isClosed = state.closedDays.includes(dow);
+    const isToday = dateStr === todayStr;
+    const isSelected = dateStr === state.date;
+
+    let cls = 'cal-day';
+    if (isPast || isTooFar) cls += ' past';
+    else if (isClosed) cls += ' closed';
+    else cls += ' available';
+    if (isToday) cls += ' today';
+    if (isSelected) cls += ' selected';
+
+    const clickable = !isPast && !isTooFar && !isClosed;
+    html += `<div class="${cls}" ${clickable ? `onclick="selectDate('${dateStr}')"` : ''}>${d}</div>`;
+  }
+
+  html += '</div>';
+  cal.innerHTML = html;
+}
+
+function prevMonth() {
+  calendarMonth--;
+  if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; }
+  renderCalendar();
+}
+
+function nextMonth() {
+  calendarMonth++;
+  if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; }
+  renderCalendar();
+}
+
+function selectDate(dateStr) {
+  state.date = dateStr;
+  state.time = null;
+  document.getElementById('btn-step3-next').disabled = false;
+  renderCalendar();
+}
+
+// =============================================
+// STEP 4: HORAS DISPONIBLES
+// =============================================
+async function loadSlots() {
+  const container = document.getElementById('slots-container');
+  const subtitle = document.getElementById('slots-subtitle');
+  container.innerHTML = '<div class="loader"><div class="spinner-border spinner-border-sm" role="status"></div> Comprobando disponibilidad...</div>';
+  document.getElementById('btn-step4-next').disabled = true;
+
+  const dateFormatted = formatDateES(state.date);
+  subtitle.textContent = `${state.treatmentName} · ${dateFormatted}`;
+
+  try {
+    const res = await fetch(`/api/availability?date=${state.date}&treatment_id=${state.treatmentId}`);
+    const data = await res.json();
+
+    if (!data.slots || data.slots.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-4">
+          <div style="font-size:2.5rem">😔</div>
+          <p class="text-muted mt-2">${data.message || 'No hay horas disponibles para este día.'}</p>
+          <button class="btn btn-outline-primary btn-sm" onclick="goStep(3)">Elegir otro día</button>
+        </div>
+      `;
+      return;
+    }
+
+    const slotsHtml = data.slots.map(slot => `
+      <button class="slot-btn ${state.time === slot ? 'selected' : ''}" onclick="selectSlot('${slot}')">
+        ${slot}
+      </button>
+    `).join('');
+
+    container.innerHTML = `<div class="slots-grid">${slotsHtml}</div>`;
+  } catch(e) {
+    container.innerHTML = '<p class="text-danger">Error al cargar los horarios. Inténtalo de nuevo.</p>';
+  }
+}
+
+function selectSlot(time) {
+  state.time = time;
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('btn-step4-next').disabled = false;
+}
+
+// =============================================
+// STEP 5: RESUMEN Y CONFIRMACIÓN
+// =============================================
+function renderSummary() {
+  const dateStr = formatDateES(state.date);
+  document.getElementById('summary-content').innerHTML = `
+    <div class="mt-3 text-start">
+      <div class="summary-row">
+        <span class="summary-label"><i class="bi bi-person me-2"></i>Nombre</span>
+        <span class="summary-value">${escHtml(state.name)} ${escHtml(state.surname)}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label"><i class="bi bi-telephone me-2"></i>Teléfono</span>
+        <span class="summary-value">${escHtml(state.phone)}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label"><i class="bi bi-stars me-2"></i>Tratamiento</span>
+        <span class="summary-value">${escHtml(state.treatmentName)}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label"><i class="bi bi-clock me-2"></i>Duración</span>
+        <span class="summary-value">${state.treatmentDuration} minutos</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label"><i class="bi bi-calendar3 me-2"></i>Fecha</span>
+        <span class="summary-value">${dateStr}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label"><i class="bi bi-clock-history me-2"></i>Hora</span>
+        <span class="summary-value">${state.time}</span>
+      </div>
+    </div>
+  `;
+}
+
+async function confirmarCita() {
+  const btn = document.getElementById('btn-confirmar');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div> Reservando...';
+
+  try {
+    const res = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: state.name,
+        surname: state.surname,
+        phone: state.phone,
+        treatment_id: state.treatmentId,
+        booking_date: state.date,
+        booking_time: state.time,
+      }),
+    });
+    const data = await res.json();
+
+    if (data.ok) {
+      // Mostrar éxito
+      document.getElementById('confirm-panel').classList.add('d-none');
+      const successPanel = document.getElementById('success-panel');
+      successPanel.classList.remove('d-none');
+
+      const dateStr = formatDateES(state.date);
+      document.getElementById('success-summary').innerHTML = `
+        <div class="summary-row"><span class="summary-label">Tratamiento</span><span class="summary-value">${escHtml(state.treatmentName)}</span></div>
+        <div class="summary-row"><span class="summary-label">Fecha</span><span class="summary-value">${dateStr}</span></div>
+        <div class="summary-row"><span class="summary-label">Hora</span><span class="summary-value">${state.time}</span></div>
+      `;
+
+      // Obtener teléfono del centro
+      try {
+        const cfg = await fetch('/api/availability/info').then(r => r.json()).catch(() => ({}));
+        document.getElementById('center-phone-display').textContent = cfg.center_phone || '+34600000000';
+      } catch(e) {}
+
+      // Actualizar stepper
+      for (let i = 1; i <= 5; i++) {
+        const dot = document.getElementById(`step-dot-${i}`);
+        if (dot) dot.classList.add('done');
+      }
+    } else {
+      alert(data.error || 'Error al crear la cita.');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-calendar-check me-1"></i> Reservar ahora';
+    }
+  } catch(e) {
+    alert('Error de conexión. Inténtalo de nuevo.');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-calendar-check me-1"></i> Reservar ahora';
+  }
+}
+
+function resetBooking() {
+  Object.assign(state, {
+    name: '', surname: '', phone: '',
+    treatmentId: null, treatmentName: '', treatmentDuration: 0,
+    date: null, time: null,
+  });
+  document.getElementById('inp-name').value = '';
+  document.getElementById('inp-surname').value = '';
+  document.getElementById('inp-phone').value = '';
+  document.getElementById('confirm-panel').classList.remove('d-none');
+  document.getElementById('success-panel').classList.add('d-none');
+
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.getElementById(`step-dot-${i}`);
+    if (dot) { dot.classList.remove('active', 'done'); }
+  }
+  document.getElementById('step-dot-1').classList.add('active');
+
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('step-1').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =============================================
+// UTILIDADES
+// =============================================
+function formatDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function formatDateES(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  const date = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+  const dnames = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  return `${dnames[date.getDay()]} ${parseInt(d)} de ${MONTHS_ES[date.getMonth()]} de ${y}`;
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Logout
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  window.location.href = '/login.html';
+});
+
+// Verificar autenticación al cargar
+(async () => {
+  const res = await fetch('/api/auth/status');
+  const data = await res.json();
+  if (!data.isUser && !data.isAdmin) {
+    window.location.href = '/login.html';
+  }
+})();
+</script>
+</body>
+</html>

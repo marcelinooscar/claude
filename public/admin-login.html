@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Centro de Estética</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="auth-wrapper" style="background: linear-gradient(135deg, #ede7f6 0%, #d1c4e9 50%, #fdf5f7 100%);">
+    <div class="auth-card">
+      <div class="auth-logo">🔧</div>
+      <h2 style="color: #4a2f6a;">Panel de Administración</h2>
+      <p class="subtitle">Acceso exclusivo para administradores</p>
+
+      <div id="error-alert" class="alert alert-danger d-none" role="alert"></div>
+
+      <form id="admin-login-form">
+        <div class="mb-3 text-start">
+          <label class="form-label">Usuario Admin</label>
+          <input type="text" class="form-control" id="username" placeholder="Usuario" required autocomplete="username">
+        </div>
+        <div class="mb-4 text-start">
+          <label class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="password" placeholder="Contraseña" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2" style="background:#6a3f8c;border-color:#6a3f8c;">
+          Entrar al Panel
+        </button>
+      </form>
+
+      <div class="mt-4 pt-4 border-top">
+        <a href="/login.html" class="text-muted small">← Volver al acceso de clientes</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      btn.textContent = 'Accediendo...';
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const res = await fetch('/api/auth/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (data.ok) {
+          window.location.href = data.redirect || '/admin';
+        } else {
+          document.getElementById('error-alert').textContent = data.error;
+          document.getElementById('error-alert').classList.remove('d-none');
+          btn.disabled = false;
+          btn.textContent = 'Entrar al Panel';
+        }
+      } catch (err) {
+        document.getElementById('error-alert').textContent = 'Error de conexión.';
+        document.getElementById('error-alert').classList.remove('d-none');
+        btn.disabled = false;
+        btn.textContent = 'Entrar al Panel';
+      }
+    });
+  </script>
+</body>
+</html>

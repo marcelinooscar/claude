@@ -1,0 +1,466 @@
+:root {
+  --primary: #c2527a;
+  --primary-light: #e8849d;
+  --primary-dark: #9e3a5e;
+  --secondary: #7e5a70;
+  --bg: #fdf5f7;
+  --card-shadow: 0 4px 20px rgba(194, 82, 122, 0.12);
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* ---- Navbar ---- */
+.navbar-brand {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary) !important;
+}
+
+/* ---- Auth pages ---- */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 50%, #fdf5f7 100%);
+}
+
+.auth-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 48px 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: var(--card-shadow);
+  text-align: center;
+}
+
+.auth-logo {
+  font-size: 3rem;
+  margin-bottom: 8px;
+}
+
+.auth-card h2 {
+  color: var(--primary-dark);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.auth-card .subtitle {
+  color: #999;
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+}
+
+/* ---- Steps ---- */
+.steps-header {
+  background: white;
+  border-bottom: 1px solid #f0e0e8;
+  padding: 16px 0;
+  margin-bottom: 32px;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.step-dot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  background: #f0e0e8;
+  color: #bbb;
+  transition: all 0.3s;
+}
+
+.step-dot.active .step-circle {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(194, 82, 122, 0.4);
+}
+
+.step-dot.done .step-circle {
+  background: #4caf50;
+  color: white;
+}
+
+.step-label {
+  font-size: 11px;
+  color: #bbb;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.step-dot.active .step-label { color: var(--primary); font-weight: 600; }
+.step-dot.done .step-label { color: #4caf50; }
+
+.step-line {
+  width: 40px;
+  height: 2px;
+  background: #f0e0e8;
+  margin-bottom: 20px;
+}
+
+.step-dot.done ~ .step-line,
+.step-dot.done + .step-line { background: #4caf50; }
+
+/* ---- Booking container ---- */
+.booking-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+.step-panel {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.step-panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.step-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 32px;
+  box-shadow: var(--card-shadow);
+}
+
+.step-card h4 {
+  color: var(--primary-dark);
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+/* ---- Treatment cards ---- */
+.treatment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.treatment-card {
+  border: 2px solid #f0e0e8;
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  position: relative;
+}
+
+.treatment-card:hover {
+  border-color: var(--primary-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(194, 82, 122, 0.15);
+}
+
+.treatment-card.selected {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, #fce4ec, #fdf5f7);
+}
+
+.treatment-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.treatment-icon { font-size: 2rem; margin-bottom: 8px; }
+.treatment-name { font-weight: 600; color: #333; font-size: 0.95rem; }
+.treatment-duration { color: var(--primary); font-size: 0.85rem; margin-top: 4px; }
+
+/* ---- Calendar ---- */
+.custom-calendar {
+  user-select: none;
+}
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.cal-header h5 {
+  margin: 0;
+  font-weight: 700;
+  color: var(--primary-dark);
+  text-transform: capitalize;
+}
+
+.cal-nav {
+  background: none;
+  border: 2px solid #f0e0e8;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--primary);
+  transition: all 0.2s;
+}
+
+.cal-nav:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+
+.cal-day-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: #999;
+  padding: 4px 0;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.cal-day.empty { cursor: default; }
+.cal-day.past { color: #ccc; cursor: not-allowed; }
+.cal-day.closed { color: #ccc; cursor: not-allowed; text-decoration: line-through; }
+.cal-day.available { color: #333; }
+.cal-day.available:hover { background: #fce4ec; border-color: var(--primary-light); }
+.cal-day.selected { background: var(--primary); color: white; border-color: var(--primary); }
+.cal-day.today { font-weight: 700; }
+
+/* ---- Time slots ---- */
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+.slot-btn {
+  padding: 12px;
+  border: 2px solid #f0e0e8;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.slot-btn:hover {
+  border-color: var(--primary);
+  background: #fce4ec;
+  transform: translateY(-2px);
+}
+
+.slot-btn.selected {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* ---- Summary ---- */
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.summary-row:last-child { border-bottom: none; }
+.summary-label { color: #888; font-size: 0.9rem; }
+.summary-value { font-weight: 600; color: #333; }
+
+/* ---- Success ---- */
+.success-icon { font-size: 4rem; }
+.info-box {
+  background: #fff3e0;
+  border: 1px solid #ffcc80;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #795548;
+}
+
+/* ---- Buttons ---- */
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  border-radius: 10px;
+  padding: 10px 28px;
+  font-weight: 600;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.btn-outline-primary {
+  color: var(--primary);
+  border-color: var(--primary);
+  border-radius: 10px;
+  padding: 10px 28px;
+  font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+/* ---- Form controls ---- */
+.form-control, .form-select {
+  border-radius: 10px;
+  border: 2px solid #f0e0e8;
+  padding: 10px 14px;
+  font-size: 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(194, 82, 122, 0.15);
+}
+
+.form-label { font-weight: 600; color: #555; }
+
+/* ---- Admin ---- */
+.admin-sidebar {
+  background: white;
+  border-right: 1px solid #f0e0e8;
+  min-height: 100vh;
+  padding: 0;
+}
+
+.admin-brand {
+  padding: 24px 20px;
+  border-bottom: 1px solid #f0e0e8;
+  font-weight: 700;
+  color: var(--primary-dark);
+  font-size: 1.1rem;
+}
+
+.admin-nav .nav-link {
+  padding: 12px 20px;
+  color: #666;
+  font-weight: 500;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-nav .nav-link:hover { background: #fce4ec; color: var(--primary); }
+.admin-nav .nav-link.active { background: var(--primary); color: white; }
+
+.admin-content {
+  padding: 32px;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+
+.admin-table-card {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.admin-table-card .table { margin: 0; }
+.admin-table-card .table th { background: #fce4ec; color: var(--primary-dark); font-weight: 700; }
+
+.schedule-day-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.schedule-day-card:hover { border-color: #f0e0e8; }
+.schedule-day-card.closed-day { opacity: 0.6; }
+
+/* ---- Badge ---- */
+.badge-duration {
+  background: #fce4ec;
+  color: var(--primary);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ---- Loader ---- */
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: var(--primary);
+  gap: 12px;
+  font-size: 1rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 576px) {
+  .step-card { padding: 20px 16px; }
+  .treatment-grid { grid-template-columns: 1fr 1fr; }
+  .slots-grid { grid-template-columns: repeat(3, 1fr); }
+  .step-line { width: 20px; }
+}
