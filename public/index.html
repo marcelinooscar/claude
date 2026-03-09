@@ -484,7 +484,7 @@ async function confirmarCita() {
       // Obtener teléfono del centro
       try {
         const cfg = await fetch('/api/availability/info').then(r => r.json()).catch(() => ({}));
-        document.getElementById('center-phone-display').textContent = cfg.center_phone || '+34600000000';
+        document.getElementById('center-phone-display').textContent = cfg.center_phone_display || cfg.center_phone || '+34600000000';
       } catch(e) {}
 
       // Actualizar stepper

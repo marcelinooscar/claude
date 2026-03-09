@@ -105,8 +105,9 @@ const upsert = db.prepare('INSERT OR IGNORE INTO config (key, value) VALUES (?, 
   ['client_username', process.env.CLIENT_USERNAME || 'cliente'],
   ['client_password', process.env.CLIENT_PASSWORD || 'reserva2024'],
   ['center_name',     process.env.CENTER_NAME     || 'Centro de Estética'],
-  ['center_phone',    process.env.CENTER_PHONE    || '+34600000000'],
-  ['admin_email',     process.env.ADMIN_EMAIL     || 'admin@example.com'],
+  ['center_phone',    process.env.DEFAULT_CENTER_CONTACT_PHONE_E164 || '+34600000000'],
+  ['center_phone_display', process.env.DEFAULT_CENTER_CONTACT_PHONE_DISPLAY || process.env.DEFAULT_CENTER_CONTACT_PHONE_E164 || '+34600000000'],
+  ['admin_email',     process.env.DEFAULT_ADMIN_NOTIFICATION_EMAIL || 'admin@example.com'],
 ].forEach(([k, v]) => upsert.run(k, v));
 
 module.exports = db;

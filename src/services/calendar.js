@@ -5,7 +5,7 @@ const TIMEZONE = process.env.TIMEZONE || 'Europe/Madrid';
 
 function getCalendarClient() {
   const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const key = process.env.GOOGLE_PRIVATE_KEY;
+  const key = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
   const calendarId = process.env.GOOGLE_CALENDAR_ID;
 
   if (!email || !key || !calendarId) {

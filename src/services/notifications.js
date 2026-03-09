@@ -14,8 +14,8 @@ function formatDate(dateString) {
  * El webhook debe aceptar POST con { to, subject, html }
  */
 async function sendAdminEmail(booking) {
-  const webhookUrl = process.env.EMAIL_WEBHOOK_URL;
-  const adminEmail = process.env.ADMIN_EMAIL;
+  const webhookUrl = process.env.BOOKING_EMAIL_WEBHOOK_URL;
+  const adminEmail = process.env.DEFAULT_ADMIN_NOTIFICATION_EMAIL;
 
   if (!webhookUrl || !adminEmail) {
     console.warn('⚠️  Email webhook no configurado. No se enviará notificación al admin.');
@@ -23,7 +23,7 @@ async function sendAdminEmail(booking) {
   }
 
   const dateFormatted = formatDate(booking.booking_date);
-  const centerPhone = process.env.CENTER_PHONE || '+34600000000';
+  const centerPhone = process.env.DEFAULT_CENTER_CONTACT_PHONE_DISPLAY || process.env.DEFAULT_CENTER_CONTACT_PHONE_E164 || '+34600000000';
   const centerName = process.env.CENTER_NAME || 'Centro de Estética';
 
   const html = `
@@ -80,16 +80,15 @@ async function sendAdminEmail(booking) {
  * INACTIVO en v1 - configurado pero no ejecutado.
  */
 async function sendClientWhatsApp(booking) {
-  const enabled = process.env.WHATSAPP_ENABLED === 'true';
-  const webhookUrl = process.env.WHATSAPP_WEBHOOK_URL;
+  const webhookUrl = process.env.BOOKING_WHATSAPP_WEBHOOK_URL;
 
-  if (!enabled || !webhookUrl) {
-    console.log('ℹ️  WhatsApp inactivo (WHATSAPP_ENABLED=false). No se enviará mensaje al cliente.');
+  if (!webhookUrl) {
+    console.log('ℹ️  WhatsApp no configurado. No se enviará mensaje al cliente.');
     return;
   }
 
   const dateFormatted = formatDate(booking.booking_date);
-  const centerPhone = process.env.CENTER_PHONE || '+34600000000';
+  const centerPhone = process.env.DEFAULT_CENTER_CONTACT_PHONE_DISPLAY || process.env.DEFAULT_CENTER_CONTACT_PHONE_E164 || '+34600000000';
   const centerName = process.env.CENTER_NAME || 'Centro de Estética';
 
   const message = [
@@ -109,7 +108,7 @@ async function sendClientWhatsApp(booking) {
   try {
     await axios.post(webhookUrl, {
       to: booking.phone,
-      from: process.env.WHATSAPP_FROM,
+      from: process.env.WHATSAPP_FROM || '',
       message,
     });
     console.log(`✅ WhatsApp enviado al cliente: ${booking.phone}`);

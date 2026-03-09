@@ -121,7 +121,7 @@ router.get('/treatments', requireAuth, (req, res) => {
 
 // GET /api/availability/info - Info pública del centro (para clientes)
 router.get('/info', requireAuth, (req, res) => {
-  const keys = ['center_name', 'center_phone'];
+  const keys = ['center_name', 'center_phone', 'center_phone_display'];
   const config = {};
   keys.forEach(k => {
     const row = db.prepare('SELECT value FROM config WHERE key = ?').get(k);
